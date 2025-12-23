@@ -1,0 +1,27 @@
+%sh
+# Folder_Hash_File
+
+src_vol="/Volumes/raw_wilson/erp/incoming/_stage_inner_zips/wildcard_sap_test_inputs/incoming/"
+dst_vol="/Volumes/raw_wilson/erp/incoming/unzipped"
+
+find "$src_vol" -iname "*.zip" -print0 |
+  xargs -0 -P 4 -I {} bash -c '
+    zip="$1"
+    dst="$2"
+
+    hash=$(printf "%s" "$zip" | shasum -a 256 | cut -c1-12)
+    zname=$(basename "$zip")
+    zbase=${zname%.[Zz][Ii][Pp]}   # strip .zip/.ZIP
+
+    tmp="$dst/tmp_${hash}_$$"
+    mkdir -p "$tmp"
+
+    unzip -oq "$zip" -d "$tmp" || { rm -rf "$tmp"; exit 0; }
+
+    while IFS= read -r -d "" f; do
+      base=$(basename "$f")
+      mv "$f" "$dst/${zbase}_${hash}_$base"
+    done < <(find "$tmp" -type f -print0)
+
+    rm -rf "$tmp"
+  ' bash {} "$dst_vol"
