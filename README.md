@@ -17,20 +17,19 @@ General rule of thumb:
 Set parallelism approximately equal to the number of driver CPU cores.
 
 Guidance by data shape:
-	•	Many small ZIPs (1–3 files each):
-parallelism = 4–8
-	•	Fewer ZIPs with many files inside (high fan-out):
-parallelism = 2–4
-	•	Large ZIPs (few but big):
-parallelism = 2–4
-	•	Mixed ERP drops (common case):
-parallelism = 4 (safe default)
+
+	•	Many small ZIPs (1–3 files each): parallelism = 4–8
+	
+	•	Fewer ZIPs with many files inside (high fan-out): parallelism = 2–4
+	
+	•	Large ZIPs (few but big): parallelism = 2–4
+	
+	•	Mixed ERP drops (common case): parallelism = 4 (safe default)
 
 Increasing parallelism beyond this often yields diminishing returns due to storage metadata contention.
 
-⸻
 
-Cluster Sizing
+### Cluster Sizing
 
 This workload does not benefit from Spark workers.
 
